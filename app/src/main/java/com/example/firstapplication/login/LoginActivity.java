@@ -3,6 +3,7 @@ package com.example.firstapplication.login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 import com.example.firstapplication.R;
 import com.example.firstapplication.common.Progress;
+import com.example.firstapplication.menu.MenuActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +170,7 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 // Simulate network access.
-                Thread.sleep(5000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 return false;
             }
@@ -183,7 +185,9 @@ public class LoginActivity extends AppCompatActivity {
             Progress.showProgress(false,mLoginFormView,mProgressView);
 
             if (success) {
-                finish();
+//                finish();
+                Intent intent = new Intent(getApplication(), MenuActivity.class);
+                startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
