@@ -30,6 +30,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.firstapplication.R;
+import com.example.firstapplication.common.DatabaseHelper;
+import com.example.firstapplication.common.DatabaseManager;
 import com.example.firstapplication.common.Progress;
 import com.example.firstapplication.menu.MenuActivity;
 
@@ -137,6 +139,8 @@ public class LoginActivity extends AppCompatActivity {
             Progress.showProgress(true,mLoginFormView,mProgressView);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
+
+            DatabaseManager.initializeInstance(new DatabaseHelper(this));
         }
     }
 
@@ -182,10 +186,9 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            Progress.showProgress(false,mLoginFormView,mProgressView);
+            Progress.showProgress(false, mLoginFormView, mProgressView);
 
             if (success) {
-//                finish();
                 Intent intent = new Intent(getApplication(), MenuActivity.class);
                 startActivity(intent);
             } else {
@@ -197,8 +200,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            Progress.showProgress(false,mLoginFormView,mProgressView);
+            Progress.showProgress(false, mLoginFormView, mProgressView);
         }
     }
 }
-
