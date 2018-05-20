@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseManager {
 
+    private int mOpenCounter;
+
     private static DatabaseManager instance;
     private static SQLiteOpenHelper mDatabaseHelper;
+    private SQLiteDatabase mDatabase;
 
     public static synchronized void initializeInstance(SQLiteOpenHelper helper) {
         if (instance == null) {
@@ -23,7 +26,18 @@ public class DatabaseManager {
         return instance;
     }
 
-    public SQLiteDatabase getDatabase() {
-        return mDatabaseHelper.getWritableDatabase();
+    public synchronized SQLiteDatabase openDatabase() {
+        mOpenCounter++;
+        if(mOpenCounter == 1) {
+            mDatabase = mDatabaseHelper.getWritableDatabase();
+        }
+        return mDatabase;
+    }
+
+    public synchronized void closeDatabase() {
+        mOpenCounter--;
+        if(mOpenCounter == 0) {
+            mDatabase.close();
+        }
     }
 }
