@@ -1,6 +1,5 @@
-package com.example.firstapplication.common;
+package com.example.firstapplication.common.notification;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -19,8 +18,7 @@ public class NotificationHelper extends ContextWrapper {
         getManager().createNotificationChannel(channel);
     }
 
-
-    private NotificationManager getManager() {
+    NotificationManager getManager() {
         if (manager == null) {
             manager = getSystemService(NotificationManager.class);
         }
@@ -35,9 +33,5 @@ public class NotificationHelper extends ContextWrapper {
 
     public void notify(int id, NotificationCompat.Builder builder) {
         getManager().notify(id, builder.build());
-    }
-
-    private boolean isOreoOrLater() {
-        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O;
     }
 }
