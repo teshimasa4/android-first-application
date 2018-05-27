@@ -8,6 +8,8 @@ import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.example.firstapplication.common.NotificationHelper;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
@@ -24,27 +26,21 @@ public class MyIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        String channelId = "default"; // 通知チャンネルのIDにする任意の文字列
         int notificationId = 1;
 
-        NotificationChannel channel = new NotificationChannel(channelId, "データのダウンロード状況", NotificationManager.IMPORTANCE_HIGH);
-
-        NotificationManager mNotifyManager = getSystemService(NotificationManager.class);
-        mNotifyManager.createNotificationChannel(channel);
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelId);
+        NotificationHelper notificationHelper = new NotificationHelper(this);
+        NotificationCompat.Builder mBuilder = notificationHelper.getNotification();
         mBuilder.setContentTitle("Picture Download");
         mBuilder.setContentText("Download in progress");
-        mBuilder.setSmallIcon(android.R.drawable.ic_notification_overlay);
-        mBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
 
-        NotificationManagerCompat.from(this).notify(1, mBuilder.build());
+        mBuilder.setProgress(5, 0, false);
+        notificationHelper.notify(notificationId, mBuilder);
 
         for(int i = 0; i < 5; i++) {
             try {
                 Thread.sleep(1000);
                 mBuilder.setProgress(5, i + 1, false);
-                NotificationManagerCompat.from(this).notify(1, mBuilder.build());
+                notificationHelper.notify(notificationId, mBuilder);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -54,6 +50,6 @@ public class MyIntentService extends IntentService {
         mBuilder.setContentText("Download complete");
         mBuilder.setProgress(0,0,false);
 //        mBuilder.setTimeoutAfter(3000);
-        NotificationManagerCompat.from(this).notify(1, mBuilder.build());
+        notificationHelper.notify(notificationId, mBuilder);
     }
 }
