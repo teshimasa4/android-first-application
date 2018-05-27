@@ -8,13 +8,12 @@ import android.support.v4.app.NotificationCompat;
 
 public class NotificationHelper extends ContextWrapper {
 
-    private static final String CHANNEL_ID = "download";
     private NotificationManager manager;
 
-    public NotificationHelper(Context base) {
+    public NotificationHelper(Context base, String channelId, String channelName) {
         super(base);
 
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "データのダウンロード状況", NotificationManager.IMPORTANCE_LOW);
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW);
         getManager().createNotificationChannel(channel);
     }
 
@@ -25,8 +24,8 @@ public class NotificationHelper extends ContextWrapper {
         return manager;
     }
 
-    public NotificationCompat.Builder getNotification() {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
+    public NotificationCompat.Builder getNotification(String channelId) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelId);
         mBuilder.setSmallIcon(android.R.drawable.ic_notification_overlay);
         return mBuilder;
     }
