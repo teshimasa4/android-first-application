@@ -2,11 +2,9 @@ package com.example.firstapplication.service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-import com.example.firstapplication.common.notification.NotificationHelper;
-import com.example.firstapplication.common.notification.NotificationUploadHelper;
+import com.example.firstapplication.common.notification.NotificationDownloadHelper;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -26,33 +24,27 @@ public class MyIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        NotificationUploadHelper notificationHelper = new NotificationUploadHelper(this);
-        NotificationCompat.Builder mBuilder = notificationHelper.getNotification("①ダウンロード");
+        NotificationDownloadHelper notificationHelper = new NotificationDownloadHelper(this, "Data Download");
 
-        mBuilder.setContentText("Download in progress");
-        mBuilder.setProgress(5, 0, false);
-        notificationHelper.notify(notificationId, mBuilder);
+        int max = 5;
+        notificationHelper.notifyStart(notificationId, "Download in progress", max);
 
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < max; i++) {
             try {
                 Thread.sleep(1000);
-                mBuilder.setProgress(5, i + 1, false);
-                notificationHelper.notify(notificationId, mBuilder);
+                notificationHelper.notifyProcessing(notificationId, max, i + 1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        mBuilder.setContentText("Download complete");
-        mBuilder.setProgress(0,0,false);
-        mBuilder.setTimeoutAfter(10000);
-        notificationHelper.notify(notificationId, mBuilder);
+        notificationHelper.notifyComplete(notificationId, "Download complete", max);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "ダウンロードを開始します。", Toast.LENGTH_LONG).show();
-        return super.onStartCommand(intent,flags,startId);
+        Toast.makeText(this, "ダウンロードを開始します。", Toast.LENGTH_SHORT).show();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override

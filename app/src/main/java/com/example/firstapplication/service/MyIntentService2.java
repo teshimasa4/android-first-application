@@ -1,14 +1,10 @@
 package com.example.firstapplication.service;
 
 import android.app.IntentService;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
-import android.content.Context;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import android.widget.Toast;
 
-import com.example.firstapplication.common.NotificationHelper;
+import com.example.firstapplication.common.notification.NotificationDownloadHelper;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -19,6 +15,8 @@ import com.example.firstapplication.common.NotificationHelper;
  */
 public class MyIntentService2 extends IntentService {
 
+    private static final int notificationId = 2;
+
     public MyIntentService2() {
         super("MyIntentService2");
     }
@@ -26,29 +24,32 @@ public class MyIntentService2 extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        int notificationId = 2;
-        NotificationHelper notificationHelper = new NotificationHelper(this);
-        NotificationCompat.Builder mBuilder = notificationHelper.getNotification();
-        mBuilder.setContentTitle("Picture Download2");
-        mBuilder.setContentText("Download in progress2");
+        NotificationDownloadHelper notificationHelper = new NotificationDownloadHelper(this, "Data Download2");
 
-        mBuilder.setProgress(5, 0, false);
-        notificationHelper.notify(notificationId, mBuilder);
+        int max = 10;
+        notificationHelper.notifyStart(notificationId, "Download2 in progress", max);
 
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < max; i++) {
             try {
-                Thread.sleep(1500);
-                mBuilder.setProgress(5, i + 1, false);
-                notificationHelper.notify(notificationId, mBuilder);
+                Thread.sleep(1000);
+                notificationHelper.notifyProcessing(notificationId, max, i + 1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
+        notificationHelper.notifyComplete(notificationId, "Download2 complete", max);
+    }
 
-        mBuilder.setContentText("Download complete");
-        mBuilder.setProgress(0,0,false);
-//        mBuilder.setTimeoutAfter(3000);
-        notificationHelper.notify(notificationId, mBuilder);
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Toast.makeText(this, "ダウンロード②を開始します。", Toast.LENGTH_SHORT).show();
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        Toast.makeText(this, "ダウンロード②が完了しました。", Toast.LENGTH_LONG).show();
+        super.onDestroy();
     }
 }
