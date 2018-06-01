@@ -2,8 +2,10 @@ package com.example.firstapplication.service;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
+import com.example.firstapplication.FirstApplication;
 import com.example.firstapplication.common.notification.NotificationDownloadHelper;
 
 /**
@@ -14,6 +16,8 @@ import com.example.firstapplication.common.notification.NotificationDownloadHelp
  * helper methods.
  */
 public class MyIntentService extends IntentService {
+
+    public static final String MYINTENTSERVICE_MESSENGER = "com.example.firstapplication.service.MYINTENTSERVICE_MESSENGER";
 
     private static final int notificationId = 1;
 
@@ -44,12 +48,26 @@ public class MyIntentService extends IntentService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "ダウンロードを開始します。", Toast.LENGTH_SHORT).show();
+
+        ((FirstApplication) this.getApplication()).buttonEnabled = false;
+
+        Intent bIntent = new Intent(MyIntentService.MYINTENTSERVICE_MESSENGER);
+        bIntent.putExtra("enabled", false);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(bIntent);
+
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
         Toast.makeText(this, "ダウンロードが完了しました。", Toast.LENGTH_LONG).show();
+
+        ((FirstApplication) this.getApplication()).buttonEnabled = true;
+
+        Intent bIntent = new Intent(MyIntentService.MYINTENTSERVICE_MESSENGER);
+        bIntent.putExtra("enabled", true);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(bIntent);
+
         super.onDestroy();
     }
 }

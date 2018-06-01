@@ -14,4 +14,6 @@ public class FirstApplication extends Application {
     public static Context getAppContext() {
         return FirstApplication.context;
     }
+
+    public boolean buttonEnabled = true;
 }

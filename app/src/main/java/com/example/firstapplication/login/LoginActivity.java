@@ -174,7 +174,6 @@ public class LoginActivity extends AppCompatActivity {
             Progress.showProgress(false, mLoginFormView, mProgressView);
 
             if (success) {
-
                 Intent sIntent = new Intent(LoginActivity.this, MyIntentService.class);
                 startService(sIntent);
 
